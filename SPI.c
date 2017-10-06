@@ -43,7 +43,7 @@ static void SPI_clk(SPI_ChannelType channel){
 static void SPI_setMaster(SPI_ChannelType channel, SPI_MasterType masterOrSlave){
 	switch(channel){
 	case SPI_0:
-		SPI0->MCR = (masterOrSlave<<31) & (1<<BIT31);
+		SPI0->MCR |= (masterOrSlave<<31);
 		break;
 	case SPI_1:
 		SPI1->MCR = (masterOrSlave<<31) & (1<<BIT31);
@@ -59,8 +59,8 @@ static void SPI_setMaster(SPI_ChannelType channel, SPI_MasterType masterOrSlave)
 static void SPI_fIFO(SPI_ChannelType channel, SPI_EnableFIFOType enableOrDisable){
 	switch(channel){
 	case SPI_0:
-		SPI0->MCR = (enableOrDisable<<13);
-		SPI0->MCR = (enableOrDisable<<12);
+		SPI0->MCR |= 0x3000;
+		//SPI0->MCR |= ~(enableOrDisable<<12);
 		break;
 	case SPI_1:
 		SPI1->MCR = (enableOrDisable<<13) & (1<<BIT13);
@@ -92,9 +92,10 @@ static void SPI_clockPolarity(SPI_ChannelType channel, SPI_PolarityType cpol){
 }
 /*It selects the frame size depending on the value of frameSize and the macros that are defined above*/
 static void SPI_frameSize(SPI_ChannelType channel, uint32 frameSize){
+	//frameSize = frameSize;
 	switch(channel){
 	case SPI_0:
-		SPI0->CTAR[0] |= frameSize+0x01;
+		SPI0->CTAR[0] |= (frameSize);
 		break;
 	case SPI_1:
 		SPI1->CTAR[1] |= frameSize;
@@ -159,7 +160,7 @@ static void SPI_mSBFirst(SPI_ChannelType channel, SPI_LSMorMSBType msb){
 void SPI_startTranference(SPI_ChannelType channel){
 	switch(channel){
 	case SPI_0:
-		SPI0->MCR |= (0<<0);
+		SPI0->MCR = 0x80000000;
 		break;
 	case SPI_1:
 		SPI1->MCR |= (0<<0);
@@ -189,7 +190,7 @@ void SPI_stopTranference(SPI_ChannelType channel){
 }
 /*It transmits the information contained in data*/
 void SPI_sendOneByte(SPI_ChannelType channel,uint8 Data){
-	SPI0->PUSHR = (Data);
+	SPI0->PUSHR |= (Data);
 	while(FALSE == (SPI0->SR & SPI_SR_TCF_MASK));
 	SPI0->SR |= SPI_SR_TCF_MASK;
 
