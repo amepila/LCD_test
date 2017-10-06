@@ -113,13 +113,13 @@ static const uint8 ASCII[][5] =
 
 
 void LCDNokia_init(void) {
+	GPIO_clockGating(GPIO_D);
 	GPIO_pinControlRegisterType pinControlRegister = GPIO_MUX1;
 
-	GPIO_clockGating(GPIO_D);
 	GPIO_dataDirectionPIN(GPIO_D,GPIO_OUTPUT,DATA_OR_CMD_PIN);
 	GPIO_pinControlRegister(GPIO_D,BIT3,&pinControlRegister);
 	
-	GPIO_clockGating(GPIO_D);
+//	GPIO_clockGating(GPIO_D);
 	GPIO_dataDirectionPIN(GPIO_D,GPIO_OUTPUT,RESET_PIN);
 	GPIO_pinControlRegister(GPIO_D,RESET_PIN,&pinControlRegister);
   //Configure control pins

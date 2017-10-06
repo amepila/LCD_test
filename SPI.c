@@ -59,8 +59,8 @@ static void SPI_setMaster(SPI_ChannelType channel, SPI_MasterType masterOrSlave)
 static void SPI_fIFO(SPI_ChannelType channel, SPI_EnableFIFOType enableOrDisable){
 	switch(channel){
 	case SPI_0:
-		SPI0->MCR = (enableOrDisable<<13) & (1<<BIT13);
-		SPI0->MCR = (enableOrDisable<<12) & (1<<BIT12);
+		SPI0->MCR = (enableOrDisable<<13);
+		SPI0->MCR = (enableOrDisable<<12);
 		break;
 	case SPI_1:
 		SPI1->MCR = (enableOrDisable<<13) & (1<<BIT13);
@@ -78,13 +78,13 @@ static void SPI_fIFO(SPI_ChannelType channel, SPI_EnableFIFOType enableOrDisable
 static void SPI_clockPolarity(SPI_ChannelType channel, SPI_PolarityType cpol){
 	switch(channel){
 	case SPI_0:
-		SPI0->CTAR[26] |= (cpol<<26);
+		SPI0->CTAR[0] |= (cpol<<26);
 		break;
 	case SPI_1:
-		SPI1->CTAR[26] |= (cpol<<26);
+		SPI1->CTAR[1] |= (cpol<<26);
 		break;
 	case SPI_2:
-		SPI2->CTAR[26] |= (cpol<<26);
+		SPI2->CTAR[2] |= (cpol<<26);
 		break;
 	default:
 		break;
@@ -94,7 +94,7 @@ static void SPI_clockPolarity(SPI_ChannelType channel, SPI_PolarityType cpol){
 static void SPI_frameSize(SPI_ChannelType channel, uint32 frameSize){
 	switch(channel){
 	case SPI_0:
-		SPI0->CTAR[0] |= frameSize;
+		SPI0->CTAR[0] |= frameSize+0x01;
 		break;
 	case SPI_1:
 		SPI1->CTAR[1] |= frameSize;
@@ -110,13 +110,13 @@ static void SPI_frameSize(SPI_ChannelType channel, uint32 frameSize){
 static void SPI_clockPhase(SPI_ChannelType channel, SPI_PhaseType cpha){
 	switch(channel){
 	case SPI_0:
-		SPI0->CTAR[25] |= (cpha<<25);
+		SPI0->CTAR[0] |= (cpha<<25);
 		break;
 	case SPI_1:
-		SPI1->CTAR[25] |= (cpha<<25);
+		SPI1->CTAR[1] |= (cpha<<25);
 		break;
 	case SPI_2:
-		SPI2->CTAR[25] |= (cpha<<25);
+		SPI2->CTAR[2] |= (cpha<<25);
 		break;
 	default:
 		break;
@@ -143,13 +143,13 @@ static void SPI_baudRate(SPI_ChannelType channel, uint32 baudRate){
 static void SPI_mSBFirst(SPI_ChannelType channel, SPI_LSMorMSBType msb){
 	switch(channel){
 	case SPI_0:
-		SPI0->CTAR[24] |= (msb<<24);
+		SPI0->CTAR[0] |= (msb<<24);
 		break;
 	case SPI_1:
-		SPI1->CTAR[24] |= (msb<<24);
+		SPI1->CTAR[1] |= (msb<<24);
 		break;
 	case SPI_2:
-		SPI2->CTAR[24] |= (msb<<24);
+		SPI2->CTAR[2] |= (msb<<24);
 		break;
 	default:
 		break;
@@ -189,36 +189,47 @@ void SPI_stopTranference(SPI_ChannelType channel){
 }
 /*It transmits the information contained in data*/
 void SPI_sendOneByte(SPI_ChannelType channel,uint8 Data){
-	switch(channel){
+	SPI0->PUSHR = (Data);
+	while(FALSE == (SPI0->SR & SPI_SR_TCF_MASK));
+	SPI0->SR |= SPI_SR_TCF_MASK;
+
+	/*switch(channel){
 	case SPI_0:
 		SPI0->PUSHR = (Data);
 		while(FALSE == (SPI0->SR & SPI_SR_TCF_MASK));
 		SPI0->SR |= SPI_SR_TCF_MASK;
-	case SPI_1:
+		break;*
+/*	case SPI_1:
 		SPI1->PUSHR = (Data);
 		while(FALSE == (SPI1->SR & SPI_SR_TCF_MASK));
 		SPI1->SR |= SPI_SR_TCF_MASK;
+		break;
 	case SPI_2:
 		SPI2->PUSHR = (Data);
 		while(FALSE == (SPI2->SR & SPI_SR_TCF_MASK));
 		SPI2->SR |= SPI_SR_TCF_MASK;
+		break;
+	default:
+		break;*/
 
 
-	}
+
+
+
 
 }
 /*It configures the SPI for transmission, this function as arguments receives a pointer to a constant structure where are all
  * the configuration parameters*/
 void SPI_init(const SPI_ConfigType* SPI_Config){
 
-	SPI_clk(SPI_Config->SPI_Channel);
 	GPIO_clockGating(SPI_Config->GPIOForSPI.GPIO_portName);
+	SPI_clk(SPI_Config->SPI_Channel);
 	GPIO_pinControlRegister(SPI_Config->GPIOForSPI.GPIO_portName,SPI_Config->GPIOForSPI.SPI_clk,&(SPI_Config->pinConttrolRegisterPORTD));
 	GPIO_pinControlRegister(SPI_Config->GPIOForSPI.GPIO_portName,SPI_Config->GPIOForSPI.SPI_Sout,&(SPI_Config->pinConttrolRegisterPORTD));
 	SPI_enable(SPI_Config->SPI_Channel);
 	SPI_setMaster(SPI_Config->SPI_Channel, SPI_Config->SPI_Master);
 	SPI_fIFO(SPI_Config->SPI_Channel, SPI_Config->SPI_EnableFIFO);
-	SPI_clockPolarity(SPI_Config->SPI_Channel, SPI_Config->SPI_Polarity);
+	SPI_clockPolarity(SPI_Config->SPI_Channel, SPI_Config->SPI_Polarity);//AQUI
 	SPI_frameSize(SPI_Config->SPI_Channel, SPI_Config->frameSize);
 	SPI_clockPhase(SPI_Config->SPI_Channel, SPI_Config->SPI_Phase);
 	SPI_baudRate(SPI_Config->SPI_Channel, SPI_Config->baudrate);
