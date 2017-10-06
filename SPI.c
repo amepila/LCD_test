@@ -94,13 +94,13 @@ static void SPI_clockPolarity(SPI_ChannelType channel, SPI_PolarityType cpol){
 static void SPI_frameSize(SPI_ChannelType channel, uint32 frameSize){
 	switch(channel){
 	case SPI_0:
-		SPI0->CTAR |= ;
+		SPI0->CTAR[0] |= frameSize;
 		break;
 	case SPI_1:
-		SPI1->CTAR |= ;
+		SPI1->CTAR[1] |= frameSize;
 		break;
 	case SPI_2:
-		SPI2->CTAR |= ;
+		SPI2->CTAR[2]|= frameSize;
 		break;
 	default:
 		break;
@@ -127,13 +127,13 @@ static void SPI_baudRate(SPI_ChannelType channel, uint32 baudRate){
 
 	switch(channel){
 	case SPI_0:
-		SPI0->CTAR |= ;
+		SPI0->CTAR[0] |= baudRate ;
 		break;
 	case SPI_1:
-		SPI1->CTAR |= ;
+		SPI1->CTAR[1] |= baudRate;
 		break;
 	case SPI_2:
-		SPI2->CTAR |= ;
+		SPI2->CTAR[2] |= baudRate;
 		break;
 	default:
 		break;
@@ -188,10 +188,23 @@ void SPI_stopTranference(SPI_ChannelType channel){
 	}
 }
 /*It transmits the information contained in data*/
-void SPI_sendOneByte(uint8 Data){
-	SPI0->PUSHR = (Data);
-	while(FALSE == (SPI0->SR & SPI_SR_TCF_MASK));
-	SPI0->SR |= SPI_SR_TCF_MASK;
+void SPI_sendOneByte(SPI_ChannelType channel,uint8 Data){
+	switch(channel){
+	case SPI_0:
+		SPI0->PUSHR = (Data);
+		while(FALSE == (SPI0->SR & SPI_SR_TCF_MASK));
+		SPI0->SR |= SPI_SR_TCF_MASK;
+	case SPI_1:
+		SPI1->PUSHR = (Data);
+		while(FALSE == (SPI1->SR & SPI_SR_TCF_MASK));
+		SPI1->SR |= SPI_SR_TCF_MASK;
+	case SPI_2:
+		SPI2->PUSHR = (Data);
+		while(FALSE == (SPI2->SR & SPI_SR_TCF_MASK));
+		SPI2->SR |= SPI_SR_TCF_MASK;
+
+
+	}
 
 }
 /*It configures the SPI for transmission, this function as arguments receives a pointer to a constant structure where are all
