@@ -43,13 +43,13 @@ static void SPI_clk(SPI_ChannelType channel){
 static void SPI_setMaster(SPI_ChannelType channel, SPI_MasterType masterOrSlave){
 	switch(channel){
 	case SPI_0:
-		SPI0->MCR |= (masterOrSlave<<31);
+		SPI0->MCR |= (masterOrSlave<<BIT31);
 		break;
 	case SPI_1:
-		SPI1->MCR = (masterOrSlave<<31) & (1<<BIT31);
+		SPI1->MCR = (masterOrSlave<<BIT31) & (1<<BIT31);
 		break;
 	case SPI_2:
-		SPI2->MCR = (masterOrSlave<<31) & (1<<BIT31);
+		SPI2->MCR = (masterOrSlave<<BIT31) & (1<<BIT31);
 		break;
 	default:
 		break;
@@ -59,8 +59,8 @@ static void SPI_setMaster(SPI_ChannelType channel, SPI_MasterType masterOrSlave)
 static void SPI_fIFO(SPI_ChannelType channel, SPI_EnableFIFOType enableOrDisable){
 	switch(channel){
 	case SPI_0:
-		SPI0->MCR |= 0x3000;
-		//SPI0->MCR |= ~(enableOrDisable<<12);
+		SPI0->MCR = (enableOrDisable<<BIT13) & (1<<BIT13);
+		SPI0->MCR = (enableOrDisable<<BIT12) & (1<<BIT12);
 		break;
 	case SPI_1:
 		SPI1->MCR = (enableOrDisable<<13) & (1<<BIT13);
@@ -101,7 +101,7 @@ static void SPI_frameSize(SPI_ChannelType channel, uint32 frameSize){
 		SPI1->CTAR[1] |= frameSize;
 		break;
 	case SPI_2:
-		SPI2->CTAR[2]|= frameSize;
+		SPI2->CTAR[2] |= frameSize;
 		break;
 	default:
 		break;
@@ -160,7 +160,7 @@ static void SPI_mSBFirst(SPI_ChannelType channel, SPI_LSMorMSBType msb){
 void SPI_startTranference(SPI_ChannelType channel){
 	switch(channel){
 	case SPI_0:
-		SPI0->MCR = 0x80000000;
+		SPI0->MCR &= (1<<BIT31);
 		break;
 	case SPI_1:
 		SPI1->MCR |= (0<<0);
@@ -224,12 +224,12 @@ void SPI_sendOneByte(SPI_ChannelType channel,uint8 Data){
 void SPI_init(const SPI_ConfigType* SPI_Config){
 
 	GPIO_clockGating(SPI_Config->GPIOForSPI.GPIO_portName);
-	SPI_clk(SPI_Config->SPI_Channel);
 	GPIO_pinControlRegister(SPI_Config->GPIOForSPI.GPIO_portName,SPI_Config->GPIOForSPI.SPI_clk,&(SPI_Config->pinConttrolRegisterPORTD));
 	GPIO_pinControlRegister(SPI_Config->GPIOForSPI.GPIO_portName,SPI_Config->GPIOForSPI.SPI_Sout,&(SPI_Config->pinConttrolRegisterPORTD));
+	SPI_clk(SPI_Config->SPI_Channel);
+	SPI_fIFO(SPI_Config->SPI_Channel, SPI_Config->SPI_EnableFIFO);
 	SPI_enable(SPI_Config->SPI_Channel);
 	SPI_setMaster(SPI_Config->SPI_Channel, SPI_Config->SPI_Master);
-	SPI_fIFO(SPI_Config->SPI_Channel, SPI_Config->SPI_EnableFIFO);
 	SPI_clockPolarity(SPI_Config->SPI_Channel, SPI_Config->SPI_Polarity);//AQUI
 	SPI_frameSize(SPI_Config->SPI_Channel, SPI_Config->frameSize);
 	SPI_clockPhase(SPI_Config->SPI_Channel, SPI_Config->SPI_Phase);
