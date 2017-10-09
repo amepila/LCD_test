@@ -63,12 +63,12 @@ static void SPI_fIFO(SPI_ChannelType channel, SPI_EnableFIFOType enableOrDisable
 		SPI0->MCR = (enableOrDisable<<BIT12) & (1<<BIT12);
 		break;
 	case SPI_1:
-		SPI1->MCR = (enableOrDisable<<13) & (1<<BIT13);
-		SPI1->MCR = (enableOrDisable<<12) & (1<<BIT12);
+		SPI1->MCR = (enableOrDisable<<BIT13) & (1<<BIT13);
+		SPI1->MCR = (enableOrDisable<<BIT12) & (1<<BIT12);
 		break;
 	case SPI_2:
-		SPI2->MCR = (enableOrDisable<<13) | (1<<BIT13);
-		SPI2->MCR = (enableOrDisable<<12) | (1<<BIT12);
+		SPI2->MCR = (enableOrDisable<<BIT13) | (1<<BIT13);
+		SPI2->MCR = (enableOrDisable<<BIT12) | (1<<BIT12);
 		break;
 	default:
 		break;
@@ -78,13 +78,13 @@ static void SPI_fIFO(SPI_ChannelType channel, SPI_EnableFIFOType enableOrDisable
 static void SPI_clockPolarity(SPI_ChannelType channel, SPI_PolarityType cpol){
 	switch(channel){
 	case SPI_0:
-		SPI0->CTAR[0] |= (cpol<<26);
+		SPI0->CTAR[0] |= (cpol<<BIT26);
 		break;
 	case SPI_1:
-		SPI1->CTAR[1] |= (cpol<<26);
+		SPI1->CTAR[1] |= (cpol<<BIT26);
 		break;
 	case SPI_2:
-		SPI2->CTAR[2] |= (cpol<<26);
+		SPI2->CTAR[2] |= (cpol<<BIT26);
 		break;
 	default:
 		break;
@@ -111,13 +111,13 @@ static void SPI_frameSize(SPI_ChannelType channel, uint32 frameSize){
 static void SPI_clockPhase(SPI_ChannelType channel, SPI_PhaseType cpha){
 	switch(channel){
 	case SPI_0:
-		SPI0->CTAR[0] |= (cpha<<25);
+		SPI0->CTAR[0] |= (cpha<<BIT25);
 		break;
 	case SPI_1:
-		SPI1->CTAR[1] |= (cpha<<25);
+		SPI1->CTAR[1] |= (cpha<<BIT25);
 		break;
 	case SPI_2:
-		SPI2->CTAR[2] |= (cpha<<25);
+		SPI2->CTAR[2] |= (cpha<<BIT25);
 		break;
 	default:
 		break;
@@ -144,13 +144,13 @@ static void SPI_baudRate(SPI_ChannelType channel, uint32 baudRate){
 static void SPI_mSBFirst(SPI_ChannelType channel, SPI_LSMorMSBType msb){
 	switch(channel){
 	case SPI_0:
-		SPI0->CTAR[0] |= (msb<<24);
+		SPI0->CTAR[0] |= (msb<<BIT24);
 		break;
 	case SPI_1:
-		SPI1->CTAR[1] |= (msb<<24);
+		SPI1->CTAR[1] |= (msb<<BIT24);
 		break;
 	case SPI_2:
-		SPI2->CTAR[2] |= (msb<<24);
+		SPI2->CTAR[2] |= (msb<<BIT24);
 		break;
 	default:
 		break;
@@ -230,7 +230,7 @@ void SPI_init(const SPI_ConfigType* SPI_Config){
 	SPI_fIFO(SPI_Config->SPI_Channel, SPI_Config->SPI_EnableFIFO);
 	SPI_enable(SPI_Config->SPI_Channel);
 	SPI_setMaster(SPI_Config->SPI_Channel, SPI_Config->SPI_Master);
-	SPI_clockPolarity(SPI_Config->SPI_Channel, SPI_Config->SPI_Polarity);//AQUI
+	SPI_clockPolarity(SPI_Config->SPI_Channel, SPI_Config->SPI_Polarity);
 	SPI_frameSize(SPI_Config->SPI_Channel, SPI_Config->frameSize);
 	SPI_clockPhase(SPI_Config->SPI_Channel, SPI_Config->SPI_Phase);
 	SPI_baudRate(SPI_Config->SPI_Channel, SPI_Config->baudrate);
