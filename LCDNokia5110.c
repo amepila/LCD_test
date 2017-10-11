@@ -113,9 +113,13 @@ static const uint8 ASCII[][5] =
 
 
 void LCDNokia_init(void) {
+	GPIO_clockGating(GPIO_D);
 	GPIO_pinControlRegisterType pinControlRegister = GPIO_MUX1;
 
+<<<<<<< HEAD
 	GPIO_clockGating(GPIO_D);
+=======
+>>>>>>> d6f9500020c60109614262d9e926ba418d742010
 	GPIO_dataDirectionPIN(GPIO_D,GPIO_OUTPUT,DATA_OR_CMD_PIN);
 	GPIO_pinControlRegister(GPIO_D,BIT3,&pinControlRegister);
 
@@ -154,7 +158,7 @@ void LCDNokia_writeByte(uint8 DataOrCmd, uint8 data)
 		GPIO_clearPIN(GPIO_D, DATA_OR_CMD_PIN);
 	
 	SPI_startTranference(SPI_0);
-	SPI_sendOneByte(data);
+	SPI_sendOneByte(SPI_0,data);
 	SPI_stopTranference(SPI_0);
 }
 
