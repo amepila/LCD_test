@@ -63,8 +63,8 @@ static void SPI_fIFO(SPI_ChannelType channel, SPI_EnableFIFOType enableOrDisable
 	switch(channel){
 	case SPI_0:
 		if(0 == enableOrDisable){
-			SPI0->MCR |= SPI_MCR_DIS_RXF_MASK;
-			SPI0->MCR |= SPI_MCR_DIS_TXF_MASK;
+			SPI0->MCR |= (SPI_MCR_DIS_RXF_MASK);
+			SPI0->MCR |= (SPI_MCR_DIS_TXF_MASK);
 		}else{
 			SPI0->MCR &= ~(SPI_MCR_DIS_RXF_MASK);
 			SPI0->MCR &= ~(SPI_MCR_DIS_TXF_MASK);
