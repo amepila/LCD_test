@@ -130,7 +130,7 @@ void SPI_startTranference(SPI_ChannelType channel);
 /*It stops the SPI transmission by modifying the value of HALT bit*/
 void SPI_stopTranference(SPI_ChannelType channel);
 /*It transmits the information contained in data*/
-void SPI_sendOneByte(SPI_ChannelType channel,uint8 Data);
+void SPI_sendOneByte(uint8 Data);
 /*It configures the SPI for transmission, this function as arguments receives a pointer to a constant structure where are all 
  * the configuration parameters*/
 void SPI_init(const SPI_ConfigType*);
