@@ -34,7 +34,7 @@ const SPI_ConfigType SPI_Config={SPI_DISABLE_FIFO,
 							GPIO_MUX2,
 							SPI_BAUD_RATE_2,
 							SPI_FSIZE_8,
-							{GPIOD,BIT1,BIT2}};
+							{GPIO_D,BIT1,BIT2}};
 /*! This array hold the initial picture that is shown in the LCD*/
 extern const uint8 ITESO[504];
 
@@ -48,22 +48,22 @@ int main(void)
 		for(;;) {	  
 			LCDNokia_clear();/*! It clears the information printed in the LCD*/
 			LCDNokia_bitmap(&ITESO[0]); /*! It prints an array that hold an image, in this case is the initial picture*/
-			delay(65000);
+			delay(6500);
 			LCDNokia_clear();
-			delay(65000);
+			delay(6500);
      		LCDNokia_clear();
      		LCDNokia_gotoXY(25,0); /*! It establishes the position to print the messages in the LCD*/
 			LCDNokia_sendString(string1); /*! It print a string stored in an array*/
-			delay(65000);
+			delay(6500);
      		LCDNokia_gotoXY(10,1);
 			LCDNokia_sendString(string2); /*! It print a string stored in an array*/
-			delay(65000);
+			delay(6500);
 			LCDNokia_gotoXY(25,2);
 			LCDNokia_sendChar('2'); /*! It prints a character*/
 			LCDNokia_sendChar('0'); /*! It prints a character*/
 			LCDNokia_sendChar('1'); /*! It prints a character*/
 			LCDNokia_sendChar('5'); /*! It prints a character*/
-			delay(65000);
+			delay(6500);
 
 		}
 	
