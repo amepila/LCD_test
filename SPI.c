@@ -223,7 +223,7 @@ void SPI_stopTranference(SPI_ChannelType channel){//COMPLETE
 }
 /*It transmits the information contained in data*/
 void SPI_sendOneByte(uint8 Data){//COMPLETE
-	SPI0->PUSHR |= (Data);
+	SPI0->PUSHR = (Data);
 	while(0 == (SPI0->SR & SPI_SR_TCF_MASK));
 	SPI0->SR |= SPI_SR_TCF_MASK;
 }
